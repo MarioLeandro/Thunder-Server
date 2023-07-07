@@ -12,6 +12,7 @@ connection();
 
 app.use(express.json())
 app.use(cors());
+app.use(express.static('images'));
 
 app.use(routes)
 

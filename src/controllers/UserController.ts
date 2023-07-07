@@ -107,7 +107,7 @@ class UserController {
             const match = await user?.comparePassword(password);
             if(match) {
                 const token = jwt.sign({
-                    user: {name: user?.name, email: user?.email}
+                    user: {name: user?.name, email: user?.email, id: user?._id}
                 },
                 process.env.SECRET,
                 {
