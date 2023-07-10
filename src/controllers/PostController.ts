@@ -1,14 +1,18 @@
 import {Request, Response} from 'express'
 import Post from '../models/Post';
+import Comment from '../models/Comment';
 
 class PostController {
     async create(req: Request, res: Response) {
 
-        const {text, image} = req.body;
+        const {text} = req.body;
         const user = req.user;
 
-        //const { filename } = req.file       
-        console.log(req.file)
+        let image = null;
+        if (req.file) {
+        const { filename } = req.file;
+        image = filename;
+        }
 
         try {
             if(!user) {
@@ -19,6 +23,7 @@ class PostController {
              const post = await Post.create({
                 text,
                 user: user.id,
+                image: image,
                 comments: []
             })
 
@@ -27,6 +32,38 @@ class PostController {
             return res.status(400).json({
                 error: error,
                 message: "Falha no registro da postagem"
+            })
+        }
+    }
+
+    async createComment(req: Request, res: Response) {
+
+        const {text} = req.body;
+        const {post_id} = req.params;
+        const user = req.user;
+
+        try {
+            if(!user) {
+                return res.status(403).json({error: "Usuário não encontrado",
+                message: "Usuário não encontrado"})
+            }
+
+            const comment = await Comment.create({
+                text,
+                user: user.id,
+            })
+
+            const post = await Post.findOne({_id: post_id})
+
+            post.comments = [comment._id, ...post.comments]
+
+            post.save();
+
+            return res.json(post);
+        } catch (error) {
+            return res.status(400).json({
+                error: error,
+                message: "Falha no registro do comentário"
             })
         }
     }
@@ -60,19 +97,25 @@ class PostController {
         }
     } */
 
-    // async index(req: Request, res: Response) {
-    //     try {
+     async index(req: Request, res: Response) {
+         try {
 
-    //         const users = await User.find()
+             const posts = await Post.find().populate('user').populate({
+                path: 'comments',
+                populate: {
+                  path: 'user',
+                  model: 'User'
+                }
+              }).exec();
 
-    //         return res.json(users);
-    //     } catch (error) {
-    //         return res.status(500).json({
-    //             error: error,
-    //             message: "Falha ao listar usuários"
-    //         })
-    //     }
-    // }
+             return res.json(posts.reverse());
+         } catch (error) {
+             return res.status(500).json({
+                 error: error,
+                 message: "Falha ao listar posts"
+             })
+         }
+     }
 
     // async view(req: Request, res: Response) {
     //     const user = req.user;

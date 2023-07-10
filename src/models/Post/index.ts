@@ -15,9 +15,10 @@ export interface PostDocument extends Post, mongoose.Document {
 
 const postSchema = new mongoose.Schema({
     user:{
-        type: String,
-        required: true,
-    },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true, 
+      },
     text:{
         type: String,
         required: true,
@@ -26,10 +27,10 @@ const postSchema = new mongoose.Schema({
         type: String,
         required: false,
     },
-    comments: {
-        type: [String],
-        required: true
-    }
+    comments: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment' 
+      }]
     
 },{timestamps: true}
 ); 
