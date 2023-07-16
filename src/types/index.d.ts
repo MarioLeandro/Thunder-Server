@@ -8,6 +8,8 @@ declare global {
         email: string;
         manager: boolean;
         id: string;
+        level: number;
+        currentExperience: number;
       },
     }
   }

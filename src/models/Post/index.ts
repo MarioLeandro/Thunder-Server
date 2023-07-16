@@ -4,7 +4,7 @@ export interface Post {
     user: string;
     text: string;
     image?: string;
-    comments: any[];
+    comments: string[];
 }
 
 export interface PostDocument extends Post, mongoose.Document {

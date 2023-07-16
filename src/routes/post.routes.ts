@@ -19,8 +19,6 @@ const upload = multer({storage: storage})
 
 routes.post("/", validateToken, upload.single("image"), PostController.create)
 routes.post("/:post_id", validateToken, PostController.createComment)
-//routes.put("/", validateToken, UserController.update)
  routes.get("/", validateToken, PostController.index)
-// routes.get("/profile", validateToken, UserController.view)
 
 export default routes;

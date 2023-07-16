@@ -65,6 +65,35 @@ class UserController {
         }
     } */
 
+    async levelUp(req: Request, res: Response) {
+        const user = req.user;
+
+        const {
+            finalExperience,
+            finalLevel,
+          } = req.body;
+
+        try {
+            if(!user) {
+                return res.status(403).json({error: "Usuário não encontrado",
+                message: "Usuário não encontrado"})
+            }
+
+            
+            const updatedUser = await User.updateOne(
+                { email: user.email },
+                {currentExperience: finalExperience, level: finalLevel}
+              ) 
+
+            return res.json(updatedUser);
+        } catch (error) {
+            return res.status(500).json({
+                error: error,
+                message: "Falha ao listar perfil"
+            })
+        }
+    } 
+
     async index(req: Request, res: Response) {
         try {
 
@@ -107,7 +136,7 @@ class UserController {
             const match = await user?.comparePassword(password);
             if(match) {
                 const token = jwt.sign({
-                    user: {name: user?.name, email: user?.email, id: user?._id}
+                    user: {name: user?.name, email: user?.email, id: user?._id, level: user?.level, currentExperience: user?.currentExperience}
                 },
                 process.env.SECRET,
                 {

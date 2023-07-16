@@ -5,6 +5,8 @@ export interface User {
     name: string;
     email: string;
     password: string;
+    level: number;
+    currentExperience: number;
 }
 
 export interface UserDocument extends User, mongoose.Document {
@@ -14,6 +16,7 @@ export interface UserDocument extends User, mongoose.Document {
     comparePassword: (password: string) => Promise<boolean>;
 }
 
+
 const userSchema = new mongoose.Schema({
     name:{
         type: String,
@@ -21,6 +24,21 @@ const userSchema = new mongoose.Schema({
     },
     email:{
         type: String,
+        unique: true,
+        required: true,
+    },
+    picture:{
+        type: String,
+        unique: true,
+        required: false,
+    },
+    level:{
+        type: Number,
+        unique: true,
+        required: true,
+    },
+    currentExperience:{
+        type: Number,
         unique: true,
         required: true,
     },
