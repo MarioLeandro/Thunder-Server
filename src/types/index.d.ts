@@ -6,10 +6,10 @@ declare global {
       user: {
         name: string;
         email: string;
-        manager: boolean;
         id: string;
         level: number;
         currentExperience: number;
+        picture: string;
       },
     }
   }

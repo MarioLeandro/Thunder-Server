@@ -24,7 +24,10 @@ class UserController {
             const user = await User.create({
                 name,
                 email,
-                password
+                password,
+                level: 0,
+                currentExperience: 0,
+                picture: ''
             })
 
             return res.json(user);
@@ -78,7 +81,6 @@ class UserController {
                 return res.status(403).json({error: "Usuário não encontrado",
                 message: "Usuário não encontrado"})
             }
-
             
             const updatedUser = await User.updateOne(
                 { email: user.email },
@@ -93,6 +95,35 @@ class UserController {
             })
         }
     } 
+
+    async changePic(req: Request, res: Response) {
+
+        const user = req.user;
+
+        let image = null;
+        if (req.file) {
+        const { filename } = req.file;
+        image = filename;
+        }
+
+        try {
+            if(!user) {
+                return res.status(403).json({error: "Usuário não encontrado",
+                message: "Usuário não encontrado"})
+            }
+
+            await User.findOneAndUpdate({email: user.email}, {picture: image})
+
+            return res.json({
+                message: "Ok"
+            });
+        } catch (error) {
+            return res.status(400).json({
+                error: error,
+                message: "Falha no registro da postagem"
+            })
+        }
+    }
 
     async index(req: Request, res: Response) {
         try {
@@ -136,7 +167,7 @@ class UserController {
             const match = await user?.comparePassword(password);
             if(match) {
                 const token = jwt.sign({
-                    user: {name: user?.name, email: user?.email, id: user?._id, level: user?.level, currentExperience: user?.currentExperience}
+                    user: {name: user?.name, email: user?.email, id: user?._id, level: user?.level, currentExperience: user?.currentExperience, picture: user?.picture}
                 },
                 process.env.SECRET,
                 {

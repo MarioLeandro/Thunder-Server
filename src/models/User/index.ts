@@ -6,6 +6,7 @@ export interface User {
     email: string;
     password: string;
     level: number;
+    picture: string;
     currentExperience: number;
 }
 
@@ -29,17 +30,14 @@ const userSchema = new mongoose.Schema({
     },
     picture:{
         type: String,
-        unique: true,
         required: false,
     },
     level:{
         type: Number,
-        unique: true,
         required: true,
     },
     currentExperience:{
         type: Number,
-        unique: true,
         required: true,
     },
     password:{

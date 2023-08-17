@@ -4,7 +4,7 @@ import Comment from '../models/Comment';
 
 class PostController {
     async create(req: Request, res: Response) {
-
+        console.log(12)
         const {text} = req.body;
         const user = req.user;
 
@@ -14,11 +14,13 @@ class PostController {
         image = filename;
         }
 
+
         try {
             if(!user) {
                 return res.status(403).json({error: "Usuário não encontrado",
                 message: "Usuário não encontrado"})
             }
+            console.log(image)
 
              const post = await Post.create({
                 text,
